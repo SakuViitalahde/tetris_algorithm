@@ -5,7 +5,7 @@ import time
 class Block():
     def __init__(self, block_matrix, shape):
         super().__init__()
-        self.block_position = (1,4) if len(block_matrix) == 2 else (1,3) 
+        self.block_position = (0,4)
         self.block_matrix = block_matrix # This is 2x2,3x3 or 4x4 depending from blocktype
         self.shape = shape # Shape of block
         self.timer = 1
