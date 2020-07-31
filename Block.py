@@ -56,7 +56,6 @@ class Block():
         Returns: True if able to move and False if not.
         """
         self.timer -= 1
-
         if self.timer <= 0 or self.dropped:
             next_step_block = copy.deepcopy(self)
             next_step_block.block_position = (next_step_block.block_position[0] + 1, next_step_block.block_position[1])

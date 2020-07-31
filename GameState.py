@@ -141,48 +141,14 @@ class GameState():
                     current_game_state[x + current_block.block_position[0]][y + current_block.block_position[1]] = e
 
         return current_game_state
-
+        
     def check_collision(self, block, next_block_position):
         " Check current block collsion to grid or other blocks"
-        current = self.countZeroes(self.set_current_block_to_gamestate(block))
-        next_jump = self.countZeroes(self.set_current_block_to_gamestate(next_block_position))
-        if current < next_jump:
+        current = np.count_nonzero(self.set_current_block_to_gamestate(block))
+        next_jump = np.count_nonzero(self.set_current_block_to_gamestate(next_block_position))
+        if current > next_jump:
             return True
         return False
-
-    def countZeroes(self, mat): 
-        # start from bottom-left 
-        # corner of the matrix 
-        N = 5
-        row = N - 1
-        col = 0
-
-        # stores number of  
-        # zeroes in the matrix 
-        count = 0
-
-        while (col < N): 
-            
-            # move up until 
-            # you find a 0 
-            while (mat[row][col]): 
-                
-                # if zero is not found  
-                # in current column, we  
-                # are done 
-                if (row < 0): 
-                    return count
-                row = row - 1; 
-
-            # add 0s present in 
-            # current column to result 
-            count = count + (row + 1)
-
-            # move right to 
-            # next column 
-            col = col + 1
-    
-        return count
 
     def check_fail(self):
         """
