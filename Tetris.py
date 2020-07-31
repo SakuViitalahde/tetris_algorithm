@@ -3,6 +3,7 @@ from GameState import GameState
 from Blocks import Blocks
 import copy
 import time
+import random
 
 WIN_WIDTH = 700
 WIN_HEIGHT = 645
@@ -54,20 +55,33 @@ def main(weights):
 
         if game_state.check_fail():
             print("Fail")
-            break
             pygame.quit()
+            return score
         
         pygame.event.pump()
 
 def main_loop():
-    start_weights = [-0.310066,0.960666,-0.35663,-0.684483, -0.32]
-
     # To get this next level, should make population and random weights
     # Simulate 10 game each and pick best one. Mutate from that and make new copies.
     # run simulations again.
     # this way its easy to find best weights
+    start_weights = [-0.310066,0.960666,-0.35663,-0.684483, -0.32]
+    population = []
+    population.append(start_weights)
+    for x in range(10):
+        new_weights = []
+        for weight in start_weights:
+            new_weights.append(weight + random.uniform(-0.3,0.3))
+        population.append(new_weights)
 
-    main(start_weights)
+    print(population)
+    scores = {}
+    for idx, weight in enumerate(population):
+        run_score = 0 
+        for runi in range(10):
+            run_score += main(start_weights)
+        scores[weight] = run_score
+    print(scores)
 
 
 def find_best_move(game_state, current_block, next_block, weights, blocks_used):

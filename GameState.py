@@ -4,8 +4,6 @@ import copy
 import numpy as np
 
 BACKGROUND_IMAGE = pygame.image.load(os.path.join("imgs","bg2.png"))
-pygame.font.init()
-STAT_FONT = pygame.font.SysFont("comicsains", 20)
 
 class GameState():
     def __init__(self):
@@ -27,10 +25,6 @@ class GameState():
         self.drawGrid(win)
         self.draw_blocks(win, current_block)
         self.draw_next_block(win, next_block)
-
-
-        text = STAT_FONT.render(f"Score: {score}", 1, (255,255,255))
-        win.blit(text,(375, 10))
         
         pygame.display.update()
 
@@ -55,10 +49,6 @@ class GameState():
         """
         Draw next block hint.
         """
-        # Add next block text.
-        text = STAT_FONT.render(f"Next block:", 1, (255,255,255))
-        win.blit(text,(450, 43))
-
         # Position of next block window
         start = (450, 90)
         end = (570, 210)
@@ -141,7 +131,7 @@ class GameState():
                     current_game_state[x + current_block.block_position[0]][y + current_block.block_position[1]] = e
 
         return current_game_state
-        
+
     def check_collision(self, block, next_block_position):
         " Check current block collsion to grid or other blocks"
         current = np.count_nonzero(self.set_current_block_to_gamestate(block))
