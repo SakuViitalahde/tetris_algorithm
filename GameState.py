@@ -13,6 +13,7 @@ class GameState():
         self.field_used = 0
         self.holes = 0 
         self.roofs = 0
+        self.pillars = 0
 
     def draw_window(self, win, current_block, score, next_block):
 
@@ -179,7 +180,8 @@ class GameState():
                 dfs(grid, i, j+1, h, w)
             if j - 1 >= 0 and grid[i][j-1] == 0:    
                 dfs(grid, i, j-1, h, w)
-
+        
+        self.holes = 0
         num = 0    
         current_game_state = copy.deepcopy(self.game_state)
         if current_game_state:
@@ -187,11 +189,9 @@ class GameState():
             w = len(current_game_state[0])
             for i in range(h):
                 for j in range(w):
-                    if current_game_state[i][j] == 0:
-                        num += 1                    
+                    if current_game_state[i][j] == 0:                   
                         dfs(current_game_state, i, j, h, w)
-
-        self.holes = num
+                        self.holes += 1
 
     def check_height(self):
         current_game_state = copy.deepcopy(self.game_state)
@@ -217,13 +217,31 @@ class GameState():
     
     def check_roofs(self):
         current_game_state = copy.deepcopy(self.game_state)
-        current_game_state = self.rotate_matrix(current_game_state)
         roofs = 0
-        for y_idx, y in enumerate(current_game_state[2:]):
-            for x_idx, x in enumerate(y):
-                if x == 0 and current_game_state[y_idx + 1][x_idx] > 0:
-                    roofs += 1
+        for y_idx, y in enumerate(current_game_state):
+            if y_idx > 2:
+                for x_idx, x in enumerate(y):
+                    if x == 0 and (current_game_state[y_idx - 1][x_idx] > 0 or current_game_state[y_idx - 2][x_idx] > 0):
+                        roofs += 1
         self.roofs = roofs
+    
+    def check_empty_pillars(self):
+        current_game_state = copy.deepcopy(self.game_state)
+        pillars = 0
+        for y_idx, y in enumerate(current_game_state):
+            if y_idx > 2:
+                for x_idx, x in enumerate(y):
+                    if x_idx == 0:
+                        if x == 0 and current_game_state[y_idx - 1][x_idx] == 0 and current_game_state[y_idx - 2][x_idx] == 0 and (current_game_state[y_idx - 1][x_idx + 1] > 0 or current_game_state[y_idx - 2][x_idx + 1] > 0):
+                            pillars += 1
+                    elif x_idx == 9:
+                        if x == 0 and current_game_state[y_idx - 1][x_idx] == 0 and current_game_state[y_idx - 2][x_idx] == 0 and (current_game_state[y_idx - 1][x_idx - 1] > 0 or current_game_state[y_idx - 2][x_idx - 1] > 0):
+                            pillars += 1
+                    else:
+                        if x == 0 and current_game_state[y_idx - 1][x_idx] == 0 and current_game_state[y_idx - 2][x_idx] == 0 and (current_game_state[y_idx - 1][x_idx - 1] > 0 or current_game_state[y_idx - 2][x_idx - 1] > 0) or (current_game_state[y_idx - 1][x_idx + 1] > 0 or current_game_state[y_idx - 2][x_idx + 1]):
+                            pillars += 1
+        self.pillars = pillars
+
 
     def rotate_matrix(self,m):
         return list(list(x)[::-1] for x in zip(*m))

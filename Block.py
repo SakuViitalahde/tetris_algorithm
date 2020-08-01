@@ -65,7 +65,7 @@ class Block():
             else:
                 return False
         return True
-    
+
     def calculate_height(self):
         height = 0
         for row in self.block_matrix:

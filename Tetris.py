@@ -42,19 +42,18 @@ def main(weights):
             current_block.dropped = True
         
         game_state.draw_window(win, current_block, score, next_block)
-
+        
         # Move Block
         if not current_block.move_down(game_state):
             game_state.game_state = game_state.set_current_block_to_gamestate(current_block)
+            calculate_fitness(game_state, weights, blocks_used)
             current_block = next_block
             next_block = None
             score += 1
             blocks_used += 1
             score = game_state.check_tetris(score)
-            print(score)
 
         if game_state.check_fail():
-            print("Fail")
             pygame.quit()
             return score
         
@@ -65,23 +64,42 @@ def main_loop():
     # Simulate 10 game each and pick best one. Mutate from that and make new copies.
     # run simulations again.
     # this way its easy to find best weights
-    start_weights = [-0.310066,0.960666,-0.35663,-0.684483, -0.32]
+    start_weights =  [-1.0, 0.5, -1.0, -1.0, -1.0, -1.0]
+    top_score = 0
     population = []
-    population.append(start_weights)
-    for x in range(10):
-        new_weights = []
-        for weight in start_weights:
-            new_weights.append(weight + random.uniform(-0.3,0.3))
-        population.append(new_weights)
+    top_weights = None
 
-    print(population)
-    scores = {}
-    for idx, weight in enumerate(population):
-        run_score = 0 
-        for runi in range(10):
-            run_score += main(start_weights)
-        scores[weight] = run_score
+    while top_score < 500:
+        print("Generation Go:")
+        population = []
+        if not top_weights:
+            population.append(start_weights)
+            for x in range(50):
+                new_weights = []
+                for weight in start_weights:
+                    new_weights.append(weight + random.uniform(-0.5,0.5))
+                population.append(new_weights)
+        else:
+            for x in range(50):
+                new_weights = []
+                population.append(top_weights)
+                for weight in top_weights:
+                    new_weights.append(weight + random.uniform(-0.25,0.25))
+                population.append(new_weights)
+
+        scores = {}
+        for idx, weight in enumerate(population):
+            run_score = 0 
+            for runi in range(10):
+                run_score += main(weight)
+            scores[idx] = run_score / 10
+            if scores[idx] > top_score:
+                top_weights = weight
+                top_score = scores[idx]
+                print(scores[idx])
+                print(weight)
     print(scores)
+    print(population)
 
 
 def find_best_move(game_state, current_block, next_block, weights, blocks_used):
@@ -137,6 +155,8 @@ def find_best_move(game_state, current_block, next_block, weights, blocks_used):
             ####
 
             # only make 4 rotates if T J L
+
+            """
             rotates_next = 2
             if next_block.shape == "T" or next_block.shape == "L" or next_block.shape == "J":
                 rotates_next = 4
@@ -189,7 +209,7 @@ def find_best_move(game_state, current_block, next_block, weights, blocks_used):
             if fitness > best_fitness:
                 best_fitness = fitness
                 best_move = (rotate, move)
-            """
+            
     return best_move
 
 def calculate_fitness(game_state, weights, blocks_used):
@@ -199,11 +219,12 @@ def calculate_fitness(game_state, weights, blocks_used):
     game_state.check_height()
     game_state.check_pikes()
     game_state.check_roofs()
+    game_state.check_empty_pillars()
 
     if game_state.check_fail():
-        return (weights[0] * game_state.field_used) + (weights[1] * game_state.tetris) + (weights[2] * game_state.holes) + (weights[3] * game_state.difference) + (weights[4] * game_state.roofs) - 10
+        return (weights[0] * game_state.field_used) + (weights[1] * game_state.tetris) + (weights[2] * game_state.holes) + (weights[3] * game_state.difference) + (weights[4] * game_state.roofs) + (weights[5] * game_state.pillars) - 10
 
-    return (weights[0] * game_state.field_used) + (weights[1] * game_state.tetris) + (weights[2] * game_state.holes) + (weights[3] * game_state.difference) + (weights[4] * game_state.roofs)
+    return (weights[0] * game_state.field_used) + (weights[1] * game_state.tetris) + (weights[2] * game_state.holes) + (weights[3] * game_state.difference) + (weights[4] * game_state.roofs) + (weights[5] * game_state.pillars)
 
 def drop_to_end(game_state, current_block):
     current_block.dropped = True
@@ -213,7 +234,6 @@ def drop_to_end(game_state, current_block):
     game_state.game_state = game_state.set_current_block_to_gamestate(current_block)
 
     return game_state
-
 
 if __name__ == "__main__":
     main_loop()
