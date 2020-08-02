@@ -65,7 +65,7 @@ def main_loop():
     # Simulate 10 game each and pick best one. Mutate from that and make new copies.
     # run simulations again.
     # this way its easy to find best weights
-    start_weights = [-0.8109629570506918, 0.998306478961074, -0.4288711273746593, -0.6368067709952574, -1.3940499100834405, -0.9545859309366488]
+    start_weights = [-0.8993915365082497, 0.5938615767948703, 0.02709091864699148, -0.2310620604595619, -0.7167194952284686, -0.9797495843397275]
     top_score = 0
     population = []
     top_weights = None
@@ -89,7 +89,7 @@ def main_loop():
                 population.append(new_weights)
 
         scores = {}
-        for idx, weight in enumerate(population):
+        for idx, weight in enumerate(population):  
             run_score = 0 
             for runi in range(5):
                 run_score += main(weight)
