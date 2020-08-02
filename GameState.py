@@ -232,13 +232,13 @@ class GameState():
             if y_idx > 2:
                 for x_idx, x in enumerate(y):
                     if x_idx == 0:
-                        if x == 0 and current_game_state[y_idx - 1][x_idx] == 0 and current_game_state[y_idx - 2][x_idx] == 0 and (current_game_state[y_idx - 1][x_idx + 1] > 0 and current_game_state[y_idx - 2][x_idx + 1] > 0):
+                        if x == 0 and current_game_state[y_idx - 1][x_idx] == 0 and current_game_state[y_idx - 2][x_idx] == 0 and current_game_state[y_idx - 2][x_idx + 1] > 0:
                             pillars += 1
                     elif x_idx == 9:
-                        if x == 0 and current_game_state[y_idx - 1][x_idx] == 0 and current_game_state[y_idx - 2][x_idx] == 0 and (current_game_state[y_idx - 1][x_idx - 1] > 0 and current_game_state[y_idx - 2][x_idx - 1] > 0):
+                        if x == 0 and current_game_state[y_idx - 1][x_idx] == 0 and current_game_state[y_idx - 2][x_idx] == 0 and current_game_state[y_idx - 2][x_idx - 1] > 0:
                             pillars += 1
                     else:
-                        if x == 0 and current_game_state[y_idx - 1][x_idx] == 0 and current_game_state[y_idx - 2][x_idx] == 0 and (current_game_state[y_idx - 1][x_idx - 1] > 0 and current_game_state[y_idx - 2][x_idx - 1] > 0) or (current_game_state[y_idx - 1][x_idx + 1] > 0 and current_game_state[y_idx - 2][x_idx + 1]):
+                        if x == 0 and current_game_state[y_idx - 1][x_idx] == 0 and current_game_state[y_idx - 2][x_idx] == 0  and current_game_state[y_idx - 2][x_idx - 1] > 0 and current_game_state[y_idx - 2][x_idx + 1]:
                             pillars += 1
         self.pillars = pillars
 
